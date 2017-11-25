@@ -1,0 +1,47 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage{tikz,pgf}
+\usetikzlibrary{arrows,automata}
+\usepackage{verbatim}
+\usepackage[fleqn,tbtags]{mathtools}
+\usepackage{tikz,fullpage}
+\usepackage{tkz-berge}
+\usepackage{adjustbox}
+
+\input{firstPage.tex}
+
+\newcommand{\ENFA}{{\Large $\varepsilon$}$-NFA$ }
+
+\begin{document}
+\maketitle
+\newpage
+
+\section{Exercise}
+  Given the $RE$ $E=(((00)*+(00)*0)10 + ((11)*+(11)*1)10)*$
+  \begin{enumerate}
+    \item Build a \ENFA thats accepts exactly the same
+          language, following the method explained in class to convert from
+          $RE$ to \ENFA.
+    \item Generate the equivalent $DFA$
+    \item Implement it in a programming language (\verb!Python!,
+          \verb!C!/\verb!C++!, \verb!Java!) following the table method.
+  \end{enumerate}
+
+\section{Solution}
+  \begin{enumerate}
+    \item Build a \ENFA thats accepts exactly the same
+          language, following the method explained in class to convert from
+          $RE$ to \ENFA. \\ \\
+          \input{exercice1.tex}
+
+    \item Generate the equivalent $DFA$ \\ \\
+          \input{exercice2.tex}
+
+    \item Implement it in a programming language (\verb!Python!,
+          \verb!C!/\verb!C++!, \verb!Java!) following the table method. \\ \\
+          \input{exercice3.tex}
+
+  \end{enumerate}
+
+\end{document}

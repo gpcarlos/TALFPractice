@@ -1,0 +1,669 @@
+To convert a $ER$ to an \ENFA we'll follow the following equivalences:
+\begin{itemize}
+  \item Union. \\
+        If $E1=0$ and $E2=0$ then $E1 \cup E2$ ($E1+E2$): \\ \\
+
+        \begin{center}
+        \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+          \node[state]  (A)                     { };
+          \node[state]  (B) [above right of=A]  { };
+          \node[state]  (C) [right of=B]        { };
+          \node[state]  (D) [below right of=A]  { };
+          \node[state]  (E) [right of=D]        { };
+          \node[state]  (F) [above right of=E]  { };
+
+          \path[->] (A) edge node         {$\varepsilon$} (B)
+                        edge node [swap]  {$\varepsilon$} (D)
+                    (B) edge node         {0}             (C)
+                    (C) edge node         {$\varepsilon$} (F)
+                    (D) edge node [swap]  {0} (E)
+                    (E) edge node [swap]  {$\varepsilon$} (F);
+        \end{tikzpicture}
+        \end{center}
+
+
+  \item Concatenation. \\
+        If $E1=0$ and $E2=0$ then $E1E2$: \\ \\
+
+        \begin{center}
+        \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+          \node[state]  (A)               { };
+          \node[state]  (B) [right of=A]  { };
+          \node[state]  (C) [right of=B]  { };
+          \node[state]  (D) [right of=C]  { };
+
+          \path[->] (A) edge node         {0} (B)
+                    (B) edge node         {$\varepsilon$} (C)
+                    (C) edge node         {0} (D);
+        \end{tikzpicture}
+        \end{center}
+
+  \item Concatenation. \\
+        If $E=0$ then $E*$: \\
+
+        \begin{center}
+        \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+          \node[state]  (A)               { };
+          \node[state]  (B) [right of=A]  { };
+          \node[state]  (C) [right of=B]  { };
+          \node[state]  (D) [right of=C]  { };
+
+          \path[->] (A) edge node                     {$\varepsilon$} (B)
+                        edge [bend right] node [swap] {$\varepsilon$} (D)
+                    (B) edge node                     {0}             (C)
+                    (C) edge node                     {$\varepsilon$} (D)
+                    (D) edge [bend right] node [swap] {$\varepsilon$} (A);
+        \end{tikzpicture}
+        \end{center}
+
+\end{itemize}
+
+\newpage
+We'll divide the main $ER$ into smaller $ER$s:
+
+    $$E=\underbracket{(\underbracket{(\underbracket{(\underbracket{\underbracket{
+    \underbracket{(00)}_{E1}*}_{E1*}+\underbracket{\underbracket{
+    \underbracket{(00)}_{E1}*}_{E1*}0}_{E3}}_{E5})10}_{E7} +
+    \underbracket{(\underbracket{\underbracket{\underbracket{(11)}_{E2}*}_{E2*}+
+    \underbracket{\underbracket{
+    \underbracket{(11)}_{E2}*}_{E2*}1}
+    _{E4}}_{E6})10}_{E8})}_{E9}*}_{E9*=E}$$
+
+    \begin{itemize}
+      \item $E1=00$ \\
+      \begin{center}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+        \node[state]  (Q01)                 { };
+        \node[state]  (Q02) [right of=Q01]  { };
+        \node[state]  (Q03) [right of=Q02]  { };
+        \node[state]  (Q04) [right of=Q03]  { };
+
+        \path[->] (Q01) edge node                     {0}             (Q02)
+                  (Q02) edge node                     {$\varepsilon$} (Q03)
+                  (Q03) edge node                     {0}             (Q04);
+      \end{tikzpicture}
+      \end{center}
+
+      \item $E1*=(00)*$ \\
+      \begin{center}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+        \node[state]  (Q01)                 { };
+        \node[state]  (Q02) [right of=Q01]  { };
+        \node[state]  (Q03) [right of=Q02]  { };
+        \node[state]  (Q04) [right of=Q03]  { };
+        \node[state]  (Q05) [right of=Q04]  { };
+        \node[state]  (Q06) [right of=Q05]  { };
+
+        \path[->]
+                  (Q01) edge node                     {$\varepsilon$} (Q02)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {0}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {0}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01);
+      \end{tikzpicture}
+      \end{center}
+
+      \item $E2=11$ \\
+      \begin{center}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+        \node[state]  (Q01)                 { };
+        \node[state]  (Q02) [right of=Q01]  { };
+        \node[state]  (Q03) [right of=Q02]  { };
+        \node[state]  (Q04) [right of=Q03]  { };
+
+        \path[->] (Q01) edge node                     {1}             (Q02)
+                  (Q02) edge node                     {$\varepsilon$} (Q03)
+                  (Q03) edge node                     {1}             (Q04);
+      \end{tikzpicture}
+      \end{center}
+
+      \item $E2*=(11)*$ \\
+      \begin{center}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+        \node[state]  (Q01)                 { };
+        \node[state]  (Q02) [right of=Q01]  { };
+        \node[state]  (Q03) [right of=Q02]  { };
+        \node[state]  (Q04) [right of=Q03]  { };
+        \node[state]  (Q05) [right of=Q04]  { };
+        \node[state]  (Q06) [right of=Q05]  { };
+
+        \path[->]
+                  (Q01) edge node                     {$\varepsilon$} (Q02)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {1}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {1}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01);
+      \end{tikzpicture}
+      \end{center}
+\newpage
+      \item $E3=(00)*0$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+        \node[state]  (Q01)                 { };
+        \node[state]  (Q02) [right of=Q01]  { };
+        \node[state]  (Q03) [right of=Q02]  { };
+        \node[state]  (Q04) [right of=Q03]  { };
+        \node[state]  (Q05) [right of=Q04]  { };
+        \node[state]  (Q06) [right of=Q05]  { };
+        \node[state]  (Q07) [right of=Q06]  { };
+        \node[state]  (Q08) [right of=Q07]  { };
+
+        \path[->]
+                  (Q01) edge node                     {$\varepsilon$} (Q02)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {0}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {0}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {0}             (Q08);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+      \item $E4=(11)*1$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+        \node[state]  (Q01)                 { };
+        \node[state]  (Q02) [right of=Q01]  { };
+        \node[state]  (Q03) [right of=Q02]  { };
+        \node[state]  (Q04) [right of=Q03]  { };
+        \node[state]  (Q05) [right of=Q04]  { };
+        \node[state]  (Q06) [right of=Q05]  { };
+        \node[state]  (Q07) [right of=Q06]  { };
+        \node[state]  (Q08) [right of=Q07]  { };
+
+        \path[->]
+                  (Q01) edge node                     {$\varepsilon$} (Q02)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {1}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {1}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {1}             (Q08);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+      \item $E5=(00)*+(00)*0$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+        \tikzstyle{invisible}=[draw=white]
+
+        \node[state,invisible]  (I01)             { };
+        \node[state]  (Q09) [above of=I01]        { }; % E2*
+        \node[state]  (Q10) [right of=Q09]        { };
+        \node[state]  (Q11) [right of=Q10]        { };
+        \node[state]  (Q12) [right of=Q11]        { };
+        \node[state]  (Q13) [right of=Q12]        { };
+        \node[state]  (Q14) [right of=Q13]        { };
+        \node[state]  (Q01) [below of=I01]        { }; % E4
+        \node[state]  (Q02) [right of=Q01]        { };
+        \node[state]  (Q03) [right of=Q02]        { };
+        \node[state]  (Q04) [right of=Q03]        { };
+        \node[state]  (Q05) [right of=Q04]        { };
+        \node[state]  (Q06) [right of=Q05]        { };
+        \node[state]  (Q07) [right of=Q06]        { };
+        \node[state]  (Q08) [right of=Q07]        { };
+        \node[state]  (Q15) [left of=I01]         { };
+        \node[state,invisible]  (I02) [above of=Q08] { };
+        \node[state]  (Q16) [right of=I02]        { };
+
+        \path[->]
+                  (Q09) edge node                     {$\varepsilon$} (Q10)% E2*
+                        edge [bend right] node [swap] {$\varepsilon$} (Q14)
+                  (Q10) edge node                     {0}             (Q11)
+                  (Q11) edge node                     {$\varepsilon$} (Q12)
+                  (Q12) edge node                     {0}             (Q13)
+                  (Q13) edge node                     {$\varepsilon$} (Q14)
+                  (Q14) edge [bend right] node [swap] {$\varepsilon$} (Q09)
+                  (Q14) edge node                     {$\varepsilon$} (Q16)
+                  (Q01) edge node                     {$\varepsilon$} (Q02)% E4
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {0}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {0}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {0}             (Q08)
+                  (Q08) edge node [swap]              {$\varepsilon$} (Q16)
+                  (Q15) edge node                     {$\varepsilon$} (Q09)
+                        edge node [swap]              {$\varepsilon$} (Q01);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+      \item $E6=(11)*+(11)*1$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+        \tikzstyle{invisible}=[draw=white]
+
+        \node[state,invisible]  (I01)             { };
+        \node[state]  (Q09) [above of=I01]        { }; % E2*
+        \node[state]  (Q10) [right of=Q09]        { };
+        \node[state]  (Q11) [right of=Q10]        { };
+        \node[state]  (Q12) [right of=Q11]        { };
+        \node[state]  (Q13) [right of=Q12]        { };
+        \node[state]  (Q14) [right of=Q13]        { };
+        \node[state]  (Q01) [below of=I01]        { }; % E4
+        \node[state]  (Q02) [right of=Q01]        { };
+        \node[state]  (Q03) [right of=Q02]        { };
+        \node[state]  (Q04) [right of=Q03]        { };
+        \node[state]  (Q05) [right of=Q04]        { };
+        \node[state]  (Q06) [right of=Q05]        { };
+        \node[state]  (Q07) [right of=Q06]        { };
+        \node[state]  (Q08) [right of=Q07]        { };
+        \node[state]  (Q15) [left of=I01]         { };
+        \node[state,invisible]  (I02) [above of=Q08] { };
+        \node[state]  (Q16) [right of=I02]        { };
+
+        \path[->]
+                  (Q09) edge node                     {$\varepsilon$} (Q10)% E2*
+                        edge [bend right] node [swap] {$\varepsilon$} (Q14)
+                  (Q10) edge node                     {1}             (Q11)
+                  (Q11) edge node                     {$\varepsilon$} (Q12)
+                  (Q12) edge node                     {1}             (Q13)
+                  (Q13) edge node                     {$\varepsilon$} (Q14)
+                  (Q14) edge [bend right] node [swap] {$\varepsilon$} (Q09)
+                  (Q14) edge node                     {$\varepsilon$} (Q16)
+                  (Q01) edge node                     {$\varepsilon$} (Q02)% E4
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {1}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {1}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {1}             (Q08)
+                  (Q08) edge node [swap]              {$\varepsilon$} (Q16)
+                  (Q15) edge node                     {$\varepsilon$} (Q09)
+                        edge node [swap]              {$\varepsilon$} (Q01);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+      \item $E7=((00)*+(00)*0)10$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+        \tikzstyle{invisible}=[draw=white]
+
+        \node[state,invisible]  (I01)             { };
+        \node[state]  (Q15) [left of=I01]         { };
+        \node[state]  (Q09) [above of=I01]        { }; % E1*
+        \node[state]  (Q10) [right of=Q09]        { };
+        \node[state]  (Q11) [right of=Q10]        { };
+        \node[state]  (Q12) [right of=Q11]        { };
+        \node[state]  (Q13) [right of=Q12]        { };
+        \node[state]  (Q14) [right of=Q13]        { };
+        \node[state]  (Q01) [below of=I01]        { }; % E3
+        \node[state]  (Q02) [right of=Q01]        { };
+        \node[state]  (Q03) [right of=Q02]        { };
+        \node[state]  (Q04) [right of=Q03]        { };
+        \node[state]  (Q05) [right of=Q04]        { };
+        \node[state]  (Q06) [right of=Q05]        { };
+        \node[state]  (Q07) [right of=Q06]        { };
+        \node[state]  (Q08) [right of=Q07]        { };
+        \node[state,invisible]  (I02) [above of=Q08] { };
+        \node[state]  (Q16) [right of=I02]        { };
+        \node[state]  (Q17) [right of=Q16]        { };
+        \node[state]  (Q18) [right of=Q17]        { };
+        \node[state]  (Q19) [right of=Q18]        { };
+        \node[state]  (Q20) [right of=Q19]        { };
+
+        \path[->]
+                  (Q09) edge node                     {$\varepsilon$} (Q10)% E1*
+                        edge [bend right] node [swap] {$\varepsilon$} (Q14)
+                  (Q10) edge node                     {0}             (Q11)
+                  (Q11) edge node                     {$\varepsilon$} (Q12)
+                  (Q12) edge node                     {0}             (Q13)
+                  (Q13) edge node                     {$\varepsilon$} (Q14)
+                  (Q14) edge [bend right] node [swap] {$\varepsilon$} (Q09)
+                  (Q14) edge node                     {$\varepsilon$} (Q16)
+                  (Q01) edge node                     {$\varepsilon$} (Q02)% E3
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {0}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {0}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {0}             (Q08)
+                  (Q08) edge node [swap]              {$\varepsilon$} (Q16)
+                  (Q15) edge node                     {$\varepsilon$} (Q09)
+                        edge node [swap]              {$\varepsilon$} (Q01)
+                  (Q16) edge node                     {$\varepsilon$} (Q17)
+                  (Q17) edge node                     {1}             (Q18)
+                  (Q18) edge node                     {$\varepsilon$} (Q19)
+                  (Q19) edge node                     {0}             (Q20);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+      \item $E8=((11)*+(11)*1)10$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+        \tikzstyle{invisible}=[draw=white]
+
+        \node[state,invisible]  (I01)             { };
+        \node[state]  (Q15) [left of=I01]         { };
+        \node[state]  (Q09) [above of=I01]        { }; % E1*
+        \node[state]  (Q10) [right of=Q09]        { };
+        \node[state]  (Q11) [right of=Q10]        { };
+        \node[state]  (Q12) [right of=Q11]        { };
+        \node[state]  (Q13) [right of=Q12]        { };
+        \node[state]  (Q14) [right of=Q13]        { };
+        \node[state]  (Q01) [below of=I01]        { }; % E3
+        \node[state]  (Q02) [right of=Q01]        { };
+        \node[state]  (Q03) [right of=Q02]        { };
+        \node[state]  (Q04) [right of=Q03]        { };
+        \node[state]  (Q05) [right of=Q04]        { };
+        \node[state]  (Q06) [right of=Q05]        { };
+        \node[state]  (Q07) [right of=Q06]        { };
+        \node[state]  (Q08) [right of=Q07]        { };
+        \node[state,invisible]  (I02) [above of=Q08] { };
+        \node[state]  (Q16) [right of=I02]        { };
+        \node[state]  (Q17) [right of=Q16]        { };
+        \node[state]  (Q18) [right of=Q17]        { };
+        \node[state]  (Q19) [right of=Q18]        { };
+        \node[state]  (Q20) [right of=Q19]        { };
+
+        \path[->]
+                  (Q09) edge node                     {$\varepsilon$} (Q10)% E1*
+                        edge [bend right] node [swap] {$\varepsilon$} (Q14)
+                  (Q10) edge node                     {1}             (Q11)
+                  (Q11) edge node                     {$\varepsilon$} (Q12)
+                  (Q12) edge node                     {1}             (Q13)
+                  (Q13) edge node                     {$\varepsilon$} (Q14)
+                  (Q14) edge [bend right] node [swap] {$\varepsilon$} (Q09)
+                  (Q14) edge node                     {$\varepsilon$} (Q16)
+                  (Q01) edge node                     {$\varepsilon$} (Q02)% E3
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {1}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {1}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {1}             (Q08)
+                  (Q08) edge node [swap]              {$\varepsilon$} (Q16)
+                  (Q15) edge node                     {$\varepsilon$} (Q09)
+                        edge node [swap]              {$\varepsilon$} (Q01)
+                  (Q16) edge node                     {$\varepsilon$} (Q17)
+                  (Q17) edge node                     {1}             (Q18)
+                  (Q18) edge node                     {$\varepsilon$} (Q19)
+                  (Q19) edge node                     {0}             (Q20);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+      \item $E9=(((00)*+(00)*0)10 + ((11)*+(11)*1)10)$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=13cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+        \tikzstyle{invisible}=[draw=white]
+
+        \node[state,invisible]  (I01)             { }; % E7
+        \node[state]  (Q15) [left of=I01]         { };
+        \node[state]  (Q09) [above of=I01]        { };
+        \node[state]  (Q10) [right of=Q09]        { };
+        \node[state]  (Q11) [right of=Q10]        { };
+        \node[state]  (Q12) [right of=Q11]        { };
+        \node[state]  (Q13) [right of=Q12]        { };
+        \node[state]  (Q14) [right of=Q13]        { };
+        \node[state]  (Q01) [below of=I01]        { };
+        \node[state]  (Q02) [right of=Q01]        { };
+        \node[state]  (Q03) [right of=Q02]        { };
+        \node[state]  (Q04) [right of=Q03]        { };
+        \node[state]  (Q05) [right of=Q04]        { };
+        \node[state]  (Q06) [right of=Q05]        { };
+        \node[state]  (Q07) [right of=Q06]        { };
+        \node[state]  (Q08) [right of=Q07]        { };
+        \node[state,invisible]  (I02) [above of=Q08] { };
+        \node[state]  (Q16) [right of=I02]        { };
+        \node[state]  (Q17) [right of=Q16]        { };
+        \node[state]  (Q18) [right of=Q17]        { };
+        \node[state]  (Q19) [right of=Q18]        { };
+        \node[state]  (Q20) [right of=Q19]        { };
+
+        \node[state,invisible]  (I05) [below of=Q15] { };
+        \node[state,invisible]  (I06) [below of=I05] { };
+        \node[state,invisible]  (I07) [below of=I06] { };
+        \node[state]  (Q41) [left of=I06]        { };
+
+        \node[state]  (Q21) [below of=I07]        { };
+        \node[state,invisible]  (I03) [right of=Q21] { }; % E8
+        \node[state]  (Q22) [above of=I03]        { };
+        \node[state]  (Q23) [right of=Q22]        { };
+        \node[state]  (Q24) [right of=Q23]        { };
+        \node[state]  (Q25) [right of=Q24]        { };
+        \node[state]  (Q26) [right of=Q25]        { };
+        \node[state]  (Q27) [right of=Q26]        { };
+        \node[state]  (Q28) [below of=I03]        { };
+        \node[state]  (Q29) [right of=Q28]        { };
+        \node[state]  (Q30) [right of=Q29]        { };
+        \node[state]  (Q31) [right of=Q30]        { };
+        \node[state]  (Q32) [right of=Q31]        { };
+        \node[state]  (Q33) [right of=Q32]        { };
+        \node[state]  (Q34) [right of=Q33]        { };
+        \node[state]  (Q35) [right of=Q34]        { };
+        \node[state,invisible]  (I04) [above of=Q35] { };
+        \node[state]  (Q36) [right of=I04]        { };
+        \node[state]  (Q37) [right of=Q36]        { };
+        \node[state]  (Q38) [right of=Q37]        { };
+        \node[state]  (Q39) [right of=Q38]        { };
+        \node[state]  (Q40) [right of=Q39]        { };
+
+        \node[state,invisible]  (I08) [below of=Q20] { };
+        \node[state,invisible]  (I09) [below of=I08] { };
+        \node[state]  (Q42) [right of=I09] { };
+
+        \path[->]
+                  (Q41) edge node                     {$\varepsilon$} (Q15)
+                        edge node [swap]              {$\varepsilon$} (Q21)
+
+                  (Q09) edge node                     {$\varepsilon$} (Q10)% E7
+                        edge [bend right] node [swap] {$\varepsilon$} (Q14)
+                  (Q10) edge node                     {0}             (Q11)
+                  (Q11) edge node                     {$\varepsilon$} (Q12)
+                  (Q12) edge node                     {0}             (Q13)
+                  (Q13) edge node                     {$\varepsilon$} (Q14)
+                  (Q14) edge [bend right] node [swap] {$\varepsilon$} (Q09)
+                  (Q14) edge node                     {$\varepsilon$} (Q16)
+                  (Q01) edge node                     {$\varepsilon$} (Q02)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {0}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {0}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {0}             (Q08)
+                  (Q08) edge node [swap]              {$\varepsilon$} (Q16)
+                  (Q15) edge node                     {$\varepsilon$} (Q09)
+                        edge node [swap]              {$\varepsilon$} (Q01)
+                  (Q16) edge node                     {$\varepsilon$} (Q17)
+                  (Q17) edge node                     {1}             (Q18)
+                  (Q18) edge node                     {$\varepsilon$} (Q19)
+                  (Q19) edge node                     {0}             (Q20)
+                  (Q20) edge node                     {$\varepsilon$} (Q42)
+
+                  (Q22) edge node                     {$\varepsilon$} (Q23)% E8
+                        edge [bend right] node [swap] {$\varepsilon$} (Q27)
+                  (Q23) edge node                     {1}             (Q24)
+                  (Q24) edge node                     {$\varepsilon$} (Q25)
+                  (Q25) edge node                     {1}             (Q26)
+                  (Q26) edge node                     {$\varepsilon$} (Q27)
+                  (Q27) edge [bend right] node [swap] {$\varepsilon$} (Q22)
+                  (Q27) edge node                     {$\varepsilon$} (Q36)
+                  (Q28) edge node                     {$\varepsilon$} (Q29)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q33)
+                  (Q29) edge node                     {1}             (Q30)
+                  (Q30) edge node                     {$\varepsilon$} (Q31)
+                  (Q31) edge node                     {1}             (Q32)
+                  (Q32) edge node                     {$\varepsilon$} (Q33)
+                  (Q33) edge [bend right] node [swap] {$\varepsilon$} (Q28)
+                        edge node                     {$\varepsilon$} (Q34)
+                  (Q34) edge node                     {1}             (Q35)
+                  (Q35) edge node [swap]              {$\varepsilon$} (Q36)
+                  (Q21) edge node                     {$\varepsilon$} (Q22)
+                        edge node [swap]              {$\varepsilon$} (Q28)
+                  (Q36) edge node                     {$\varepsilon$} (Q37)
+                  (Q37) edge node                     {1}             (Q38)
+                  (Q38) edge node                     {$\varepsilon$} (Q39)
+                  (Q39) edge node                     {0}             (Q40)
+                  (Q40) edge node [swap]              {$\varepsilon$} (Q42);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+\newpage
+      \item $E9*=(((00)*+(00)*0)10 + ((11)*+(11)*1)10)*=E$ \\
+      \begin{center}
+      \begin{adjustbox}{max width=14cm}
+      \begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+        \tikzstyle{invisible}=[draw=white]
+
+        \node[state,invisible]  (I01)             { }; % E7
+        \node[state]  (Q15) [left of=I01]         {3};
+        \node[state]  (Q09) [above of=I01]        {4};
+        \node[state]  (Q10) [right of=Q09]        {5};
+        \node[state]  (Q11) [right of=Q10]        {6};
+        \node[state]  (Q12) [right of=Q11]        {7};
+        \node[state]  (Q13) [right of=Q12]        {8};
+        \node[state]  (Q14) [right of=Q13]        {9};
+        \node[state]  (Q01) [below of=I01]        {10};
+        \node[state]  (Q02) [right of=Q01]        {11};
+        \node[state]  (Q03) [right of=Q02]        {12};
+        \node[state]  (Q04) [right of=Q03]        {13};
+        \node[state]  (Q05) [right of=Q04]        {14};
+        \node[state]  (Q06) [right of=Q05]        {15};
+        \node[state]  (Q07) [right of=Q06]        {16};
+        \node[state]  (Q08) [right of=Q07]        {17};
+        \node[state,invisible]  (I02) [above of=Q08] { };
+        \node[state]  (Q16) [right of=I02]        {18};
+        \node[state]  (Q17) [right of=Q16]        {19};
+        \node[state]  (Q18) [right of=Q17]        {20};
+        \node[state]  (Q19) [right of=Q18]        {21};
+        \node[state]  (Q20) [right of=Q19]        {22};
+
+        \node[state,invisible]  (I05) [below of=Q15] { };
+        \node[state,invisible]  (I06) [below of=I05] { };
+        \node[state,invisible]  (I07) [below of=I06] { };
+        \node[state]  (Q41) [left of=I06]        {3};
+
+        \node[state]  (Q21) [below of=I07]        {23};
+        \node[state,invisible]  (I03) [right of=Q21] { }; % E8
+        \node[state]  (Q22) [above of=I03]        {24};
+        \node[state]  (Q23) [right of=Q22]        {25};
+        \node[state]  (Q24) [right of=Q23]        {26};
+        \node[state]  (Q25) [right of=Q24]        {27};
+        \node[state]  (Q26) [right of=Q25]        {28};
+        \node[state]  (Q27) [right of=Q26]        {29};
+        \node[state]  (Q28) [below of=I03]        {30};
+        \node[state]  (Q29) [right of=Q28]        {31};
+        \node[state]  (Q30) [right of=Q29]        {32};
+        \node[state]  (Q31) [right of=Q30]        {33};
+        \node[state]  (Q32) [right of=Q31]        {34};
+        \node[state]  (Q33) [right of=Q32]        {35};
+        \node[state]  (Q34) [right of=Q33]        {36};
+        \node[state]  (Q35) [right of=Q34]        {37};
+        \node[state,invisible]  (I04) [above of=Q35] { };
+        \node[state]  (Q36) [right of=I04]        {38};
+        \node[state]  (Q37) [right of=Q36]        {39};
+        \node[state]  (Q38) [right of=Q37]        {40};
+        \node[state]  (Q39) [right of=Q38]        {41};
+        \node[state]  (Q40) [right of=Q39]        {42};
+
+        \node[state,invisible]  (I08) [below of=Q20] { };
+        \node[state,invisible]  (I09) [below of=I08] { };
+        \node[state]  (Q42) [right of=I09] {43};
+
+        \node[state,accepting]  (Q43) [right of=Q42] {44};
+        \node[state,initial]  (Q44) [left of=Q41] {1};
+
+        \path[->]
+                  (Q41) edge node                     {$\varepsilon$} (Q15)
+                        edge node [swap]              {$\varepsilon$} (Q21)
+                  (Q44) edge node                     {$\varepsilon$} (Q41)
+                  (Q09) edge node                     {$\varepsilon$} (Q10)% E7
+                        edge [bend right] node [swap] {$\varepsilon$} (Q14)
+                  (Q10) edge node                     {0}             (Q11)
+                  (Q11) edge node                     {$\varepsilon$} (Q12)
+                  (Q12) edge node                     {0}             (Q13)
+                  (Q13) edge node                     {$\varepsilon$} (Q14)
+                  (Q14) edge [bend right] node [swap] {$\varepsilon$} (Q09)
+                  (Q14) edge node                     {$\varepsilon$} (Q16)
+                  (Q01) edge node                     {$\varepsilon$} (Q02)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q06)
+                  (Q02) edge node                     {0}             (Q03)
+                  (Q03) edge node                     {$\varepsilon$} (Q04)
+                  (Q04) edge node                     {0}             (Q05)
+                  (Q05) edge node                     {$\varepsilon$} (Q06)
+                  (Q06) edge [bend right] node [swap] {$\varepsilon$} (Q01)
+                        edge node                     {$\varepsilon$} (Q07)
+                  (Q07) edge node                     {0}             (Q08)
+                  (Q08) edge node [swap]              {$\varepsilon$} (Q16)
+                  (Q15) edge node                     {$\varepsilon$} (Q09)
+                        edge node [swap]              {$\varepsilon$} (Q01)
+                  (Q16) edge node                     {$\varepsilon$} (Q17)
+                  (Q17) edge node                     {1}             (Q18)
+                  (Q18) edge node                     {$\varepsilon$} (Q19)
+                  (Q19) edge node                     {0}             (Q20)
+                  (Q20) edge node                     {$\varepsilon$} (Q42)
+
+                  (Q22) edge node                     {$\varepsilon$} (Q23)% E8
+                        edge [bend right] node [swap] {$\varepsilon$} (Q27)
+                  (Q23) edge node                     {1}             (Q24)
+                  (Q24) edge node                     {$\varepsilon$} (Q25)
+                  (Q25) edge node                     {1}             (Q26)
+                  (Q26) edge node                     {$\varepsilon$} (Q27)
+                  (Q27) edge [bend right] node [swap] {$\varepsilon$} (Q22)
+                  (Q27) edge node                     {$\varepsilon$} (Q36)
+                  (Q28) edge node                     {$\varepsilon$} (Q29)
+                        edge [bend right] node [swap] {$\varepsilon$} (Q33)
+                  (Q29) edge node                     {1}             (Q30)
+                  (Q30) edge node                     {$\varepsilon$} (Q31)
+                  (Q31) edge node                     {1}             (Q32)
+                  (Q32) edge node                     {$\varepsilon$} (Q33)
+                  (Q33) edge [bend right] node [swap] {$\varepsilon$} (Q28)
+                        edge node                     {$\varepsilon$} (Q34)
+                  (Q34) edge node                     {1}             (Q35)
+                  (Q35) edge node [swap]              {$\varepsilon$} (Q36)
+                  (Q21) edge node                     {$\varepsilon$} (Q22)
+                        edge node [swap]              {$\varepsilon$} (Q28)
+                  (Q36) edge node                     {$\varepsilon$} (Q37)
+                  (Q37) edge node                     {1}             (Q38)
+                  (Q38) edge node                     {$\varepsilon$} (Q39)
+                  (Q39) edge node                     {0}             (Q40)
+                  (Q40) edge node [swap]              {$\varepsilon$} (Q42)
+                  (Q42) edge node                     {$\varepsilon$} (Q43);
+        \path[->][blue]
+                  (Q44) edge [bend right] node        {$\varepsilon$} (Q43)
+                  (Q43) edge [bend right] node        {$\varepsilon$} (Q44);
+      \end{tikzpicture}
+      \end{adjustbox}
+      \end{center}
+
+    \end{itemize}
