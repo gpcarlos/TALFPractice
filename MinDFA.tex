@@ -1,0 +1,22 @@
+\begin{center}
+\begin{adjustbox}{max width=14cm}
+\begin{tikzpicture}[shorten >=1pt,node distance=2cm,auto]
+
+  \node[state,initial,accepting]  (A)                         {A};
+  \node[state]                    (B)     [above right of=A]  {B};
+  \node[state]                    (C)     [below right of=A]  {C};
+  \node[state]                    (D)     [below right of=B]  {D};
+  \node[state]                    (Dead)  [right of=D]        {Dead};
+
+  \path[->]
+            (A) edge [bend left]  node {0} (B)
+                edge [bend right] node [swap] {1} (C)
+            (B) edge [loop above] node {0} ()
+                edge              node {1} (D)
+            (C) edge [loop below] node {1} ()
+                edge [bend right] node [swap] {0} (A)
+            (D) edge              node [swap] {0} (A)
+                edge              node {1} (Dead);
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}

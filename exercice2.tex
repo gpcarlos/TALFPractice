@@ -1,1 +1,88 @@
-Solution 2.
+To generate the equivalent DFA, we'll follow the \textbf{subset construction method},
+so we'll need the equivalent NFA. In the table \ref{tab:ENFA}(a) we have the transition
+table of \ENFA and in the table \ref{tab:ENFA}(b) the closures.
+
+\begin{table}[h]
+  \centering
+  \caption{Transition Table of \ENFA}
+  \label{tab:ENFA}
+  \subfloat[{\tiny Transition Table of {\normalsize $\varepsilon$}$-NFA$}]{
+    \hspace{.2cm}
+    \scalebox{0.7}{ \input{Tables/TransitionTableENFA.tex} }
+    \hspace{.2cm}
+  }
+  \hspace{1cm}
+  \subfloat[{\tiny Closures of {\normalsize $\varepsilon$}$-NFA$}]{
+    \hspace{.2cm}
+    \scalebox{0.7}{ \input{Tables/ClosuresENFA.tex} }
+    \hspace{.2cm}
+  }
+\end{table}
+
+\newpage
+Removing the {\Large $\varepsilon$}-transition, we obtain the transition
+table \ref{tab:NFA} of NFA.
+
+\begin{table}[h!]
+\centering
+  \scalebox{0.6}{ \input{Tables/TransitionTableNFA.tex} }
+  \caption{Transition Table of NFA}
+  \label{tab:NFA}
+\end{table}
+
+And the NFA: \\
+\input{NFA.tex}
+
+\newpage
+Following the \textbf{subset construction method}, we obtain the table
+\refeq{tab:DFA}(a) and we can rename the states like in the table \ref{tab:DFA}(b).
+
+\begin{table}[h]
+  \centering
+  \caption{Transition Table of DFA}
+  \label{tab:DFA}
+  \subfloat[{\tiny Transition Table of DFA}]{
+    \hspace{.2cm}
+    \scalebox{0.7}{ \input{Tables/TransitionTableDFA.tex} }
+    \hspace{.2cm}
+  }
+  \hspace{1cm}
+  \subfloat[{\tiny Transition Table of DFA (Renamed)}]{
+    \hspace{.2cm}
+    \scalebox{0.7}{ \input{Tables/TransitionTableDFARenamed.tex} }
+    \hspace{.2cm}
+  }
+\end{table}
+
+Following the \textbf{state minimization algorithm} for DFAs, we obtain the table \ref{tab:MinztDFA}
+where {\small\textcolor{red}{X}} are all initial pairs of distinguishable states,
+{\small\textcolor{blue}{X}} are all pairs of distinguishable states in the first round and
+{\small\textcolor{gray}{O}} are all pairs of equivalent states.
+\begin{table}[h!]
+\centering
+  \scalebox{0.9}{ \input{Tables/MinimizationTableDFA.tex} }
+  \caption{Minimization Table of DFA}
+  \label{tab:MinztDFA}
+\end{table}
+
+\newpage
+
+The Minimum-state DFA is:
+\begin{table}[h]
+  \centering
+  \caption{Minimum-state Table of DFA}
+  \label{tab:MinDFA}
+  \subfloat[{\tiny Minimum-state Table of DFA}]{
+    \hspace{.2cm}
+    \scalebox{1}{ \input{Tables/MinimunTableDFA.tex} }
+    \hspace{.2cm}
+  }
+  \hspace{1cm}
+  \subfloat[{\tiny Minimum-state Table of DFA (Renamed)}]{
+    \hspace{.2cm}
+    \scalebox{1}{ \input{Tables/MinimunTableDFARenamed.tex} }
+    \hspace{.2cm}
+  }
+\end{table}
+
+\input{MinDFA.tex}
