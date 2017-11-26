@@ -11,6 +11,28 @@
 \usepackage{subfig}
 \usepackage[hidelinks]{hyperref}
 \usepackage{color}
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+\usepackage{listings}
+\lstset{ frame=Ltb,
+         framerule=0pt,
+         aboveskip=0.5cm,
+         framextopmargin=3pt,
+         framexbottommargin=3pt,
+         framexleftmargin=0.4cm,
+         framesep=0pt,
+         rulesep=.4pt,
+         backgroundcolor=\color{gray97},
+         rulesepcolor=\color{black},
+         texcl=true,
+         stringstyle=\ttfamily,
+         showstringspaces = false,
+         basicstyle=\small \ttfamily,
+         commentstyle=\color{gray45},
+         keywordstyle=\bfseries,
+         inputencoding=utf8/latin1,
+}
 
 \input{firstPage.tex}
 
@@ -20,7 +42,7 @@
 \maketitle
 \newpage
 
-\section{Exercise}
+\section{Exercises}
   Given the $RE$ $E=(((00)*+(00)*0)10 + ((11)*+(11)*1)10)*$
   \begin{enumerate}
     \item Build a \ENFA thats accepts exactly the same
@@ -29,9 +51,9 @@
     \item Generate the equivalent $DFA$
     \item Implement it in a programming language (\verb!Python!,
           \verb!C!/\verb!C++!, \verb!Java!) following the table method.
-  \end{enumerate} 
+  \end{enumerate}
 
-\section{Solution}
+\section{Solutions}
   \begin{enumerate}
     \item Build a \ENFA thats accepts exactly the same
           language, following the method explained in class to convert from
@@ -43,7 +65,7 @@
     \newpage
     \item Implement it in a programming language (\verb!Python!,
           \verb!C!/\verb!C++!, \verb!Java!) following the table method. \\ \\
-          \input{exercice3.tex}
+          \lstinputlisting[language=Python]{Code/DFA.py}
 
   \end{enumerate}
 
